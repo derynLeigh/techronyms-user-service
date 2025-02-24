@@ -1,5 +1,6 @@
 package com.techronymsuserservice.service;
 
+import com.techronymsuserservice.exceptions.UserAlreadyExistsException;
 import com.techronymsuserservice.model.*;
 import com.techronymsuserservice.respository.UserRepository;
 import com.techronymsuserservice.service.impl.UserServiceImpl;
@@ -10,6 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -38,5 +42,28 @@ public class UserServiceImplTest {
         assertEquals("encodedPassword", registeredUser.getPassword());
         assertEquals("test@example.com", registeredUser.getEmail());
         assertEquals(UserRole.USER, registeredUser.getRole());
+    }
+
+    @Test
+    public void testExceptionThrownInRegistrationWhenUsernameExists() {
+        User existingUser = new User("existingUser", "already@exists.com", "password123", UserRole.USER);
+
+        when(userRepository.findByUsername("existingUser")).thenReturn(List.of(existingUser));
+
+        User newUser = new User("existingUser", "new@example.com", "password321", UserRole.USER);
+
+        Exception exception = assertThrows(UserAlreadyExistsException.class, () -> userService.registerUser(newUser));
+        assertEquals("Username already exists", exception.getMessage());
+    }
+
+    @Test
+    void testRegisterUser_throwsExceptionWhenEmailExists() {
+        User existingUser = new User("user2", "existing@example.com", "password123", UserRole.USER);
+        when(userRepository.findByEmail("existing@example.com")).thenReturn(existingUser);
+
+        User newUser = new User("newUser", "existing@example.com", "password123", UserRole.USER);
+
+        Exception exception = assertThrows(UserAlreadyExistsException.class, () -> userService.registerUser(newUser));
+        assertEquals("Email already exists", exception.getMessage());
     }
 }
