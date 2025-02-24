@@ -20,6 +20,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User registerUser(User user) {
+        user.setUsername(user.getUsername().toLowerCase());
+        user.setEmail(user.getEmail().toLowerCase());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    @Override
+    public boolean authenticateUser(String username, String password) {
+        return false;
+    }
+
+    @Override
     public void updateUserRole(Long userId, String roleName) {
 
     }
