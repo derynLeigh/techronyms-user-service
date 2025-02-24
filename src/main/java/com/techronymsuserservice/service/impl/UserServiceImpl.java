@@ -28,8 +28,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean authenticateUser(String username, String password) {
-        return false;
+    public boolean authenticateUser(String email, String password) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            return false;
+        }
+        return passwordEncoder.matches(password, user.getPassword());
     }
 
     @Override
