@@ -1,7 +1,15 @@
 package com.techronymsuserservice.service;
 
-import org.springframework.stereotype.Service;
+import com.techronymsuserservice.DTO.UserDTO;
+import com.techronymsuserservice.model.User;
 
-@Service
-public class UserService {
+import java.util.List;
+
+public interface UserService {
+    void updateUserRole(Long userId, String roleName);
+
+    List<User> getAllUsers();
+
+    UserDTO getUserById(Long id);
 }
+
