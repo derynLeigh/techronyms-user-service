@@ -45,7 +45,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testExceptionThrownInRegistrationWhenUsernameExists() {
+    public void testExceptionThrownWhenUsernameExists() {
         User existingUser = new User("existingUser", "already@exists.com", "password123", UserRole.USER);
 
         when(userRepository.findByUsername("existingUser")).thenReturn(List.of(existingUser));
@@ -57,7 +57,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testRegisterUser_throwsExceptionWhenEmailExists() {
+    void testExceptionThrownWhenEmailExists() {
         User existingUser = new User("user2", "existing@example.com", "password123", UserRole.USER);
         when(userRepository.findByEmail("existing@example.com")).thenReturn(existingUser);
 
